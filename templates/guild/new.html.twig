@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Guild{% endblock %}
+
+{% block body %}
+    <h1>Create new Guild</h1>
+
+    {{ include('guild/_form.html.twig') }}
+
+    <a href="{{ path('app_guild_index') }}">back to list</a>
+{% endblock %}

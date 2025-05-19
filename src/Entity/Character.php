@@ -29,7 +29,7 @@ class Character
 
     #[ORM\ManyToOne(inversedBy: 'characters')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $player = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'characters')]
     #[ORM\JoinColumn(nullable: false)]
@@ -37,6 +37,11 @@ class Character
 
     #[ORM\ManyToOne(inversedBy: 'characters')]
     private ?Guild $guild = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Specialisation $specialisation = null;
+
 
     /**
      * @var Collection<int, EventParticipation>
@@ -116,17 +121,17 @@ class Character
         return $this;
     }
 
-    public function getPlayer(): ?user
+    public function getUser(): ?User
     {
-        return $this->player;
+        return $this->user;
     }
 
-    public function setPlayer(?user $player): static
+    public function setUser(?User $user): static
     {
-        $this->player = $player;
-
+        $this->user = $user;
         return $this;
     }
+
 
     public function getClasse(): ?Classe
     {
@@ -151,6 +156,18 @@ class Character
 
         return $this;
     }
+
+    public function getSpecialisation(): ?Specialisation
+    {
+        return $this->specialisation;
+    }
+
+    public function setSpecialisation(?Specialisation $specialisation): static
+    {
+        $this->specialisation = $specialisation;
+        return $this;
+    }
+
 
     /**
      * @return Collection<int, EventParticipation>

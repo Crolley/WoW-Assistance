@@ -11,7 +11,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -31,7 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Character>
      */
-    #[ORM\OneToMany(targetEntity: Character::class, mappedBy: 'player')]
+    #[ORM\OneToMany(targetEntity: Character::class, mappedBy: 'user')]
     private Collection $characters;
 
     public function __construct()
@@ -52,7 +51,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -64,7 +62,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -76,7 +73,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPseudo(string $pseudo): static
     {
         $this->pseudo = $pseudo;
-
         return $this;
     }
 
@@ -109,7 +105,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->characters->contains($character)) {
             $this->characters->add($character);
-            $character->setPlayer($this);
+            $character->setUser($this);
         }
 
         return $this;
@@ -118,9 +114,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCharacter(Character $character): static
     {
         if ($this->characters->removeElement($character)) {
-            // set the owning side to null (unless already changed)
-            if ($character->getPlayer() === $this) {
-                $character->setPlayer(null);
+            if ($character->getUser() === $this) {
+                $character->setUser(null);
             }
         }
 

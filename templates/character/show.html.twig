@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Character{% endblock %}
+
+{% block body %}
+    <h1>Character</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ character.id }}</td>
+            </tr>
+            <tr>
+                <th>NameCharacter</th>
+                <td>{{ character.nameCharacter }}</td>
+            </tr>
+            <tr>
+                <th>RaiderIo</th>
+                <td>{{ character.raiderIo }}</td>
+            </tr>
+            <tr>
+                <th>Server</th>
+                <td>{{ character.server }}</td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td>{{ character.role }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_character_index') }}">back to list</a>
+
+    <a href="{{ path('app_character_edit', {'id': character.id}) }}">edit</a>
+
+    {{ include('character/_delete_form.html.twig') }}
+{% endblock %}

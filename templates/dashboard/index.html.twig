@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard
+{% endblock %}
+
+{% block body %}
+	<h1>Bienvenue
+		{{ character.nameCharacter }}</h1>
+
+
+	<div style="padding: 1rem; background: #eee; border-radius: 8px;">
+		<h2>Tableau de bord</h2>
+		<ul>
+			<li>
+				<ahref="{{path('app_guild_index')}}">Gérer ma guilde</ahref=>
+			</li>
+			<li>
+				<a href="{{path('app_character_index')}}">Gérer mes personnages</a>
+			</li>
+			<li>
+				<a href="{{path('app_event_index')}}">Voir les événements</a>
+			</li>
+			<li>
+				<a href="#">Voir les loots</a>
+			</li>
+			<li>
+				<a href="#">Requêtes de raid</a>
+			</li>
+			<li>
+				<form action="/logout" method="post">
+					<button type="submit">Se déconnecter</button>
+				</form>
+			</li>
+
+		</li>
+
+	</ul>
+</div>{% endblock %}

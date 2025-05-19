@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sélection du personnage
+{% endblock %}
+
+{% block body %}
+	<h1>Choisis ton personnage</h1>
+	<form action="/logout" method="post">
+		<button type="submit">Se déconnecter</button>
+	</form>
+	<button>
+		<a href="{{ path('app_character_new') }}">Créer un personnage</a>
+	</button>
+
+
+	<ul>
+		{% for character in characters %}
+			<li>
+				<a href="{{ path('app_select_character_set', { id: character.id }) }}">
+					{{ character.nameCharacter }}
+				</a>
+			</li>
+		{% else %}
+			<li>Tu n'as aucun personnage !</li>
+		{% endfor %}
+	</ul>
+
+{% endblock %}
