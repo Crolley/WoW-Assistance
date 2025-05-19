@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Membres de la guilde{% endblock %}
+
+{% block body %}
+<h1>Membres de {{ guild.name }}</h1>
+
+{% set role_order = {
+    'GM': 1,
+    'RL': 2,
+    'Officier': 3,
+    'Raider': 4,
+    'Membre': 5,
+    'apply': 6
+} %}
+
+{% set sorted_members = members|sort((a, b) => role_order[a.role]|default(999) <=> role_order[b.role]|default(999)) %}
+{% set roles = constant('App\\Entity\\Character::ROLES') %}
+{% set allowed_roles = ['GM', 'RL', 'Officier'] %}
+
+<ul>
+    {% for member in sorted_members %}
+        <li>
+            {{ member.nameCharacter }} — {{ member.classe.name }} / {{ member.specialisation.name }} — Rôle :
+
+            {% if character.role in allowed_roles %}
+                <select class="role-select" data-member-id="{{ member.id }}">
+                    {% for key, value in roles %}
+                        <option value="{{ value }}" {% if value == member.role %}selected{% endif %}>{{ key }}</option>
+                    {% endfor %}
+                </select>
+            {% else %}
+                {{ member.role }}
+            {% endif %}
+        </li>
+    {% else %}
+        <li>Aucun membre dans cette guilde.</li>
+    {% endfor %}
+</ul>
+
+<p><a href="{{ path('app_dashboard') }}">← Retour au dashboard</a></p>
+
+<script>
+    document.querySelectorAll('.role-select').forEach(select => {
+        select.addEventListener('change', () => {
+            const memberId = select.dataset.memberId;
+            const role = select.value;
+
+            fetch(`/api/v1/character/${memberId}/role`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({ role })
+            }).then(res => {
+                if (!res.ok) {
+                    alert('Erreur lors du changement de rôle');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

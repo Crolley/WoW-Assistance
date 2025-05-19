@@ -258,4 +258,13 @@ class Character
 
         return $this;
     }
+
+    public const ROLES = [
+        'Membre' => 'Membre',
+        'Apply' => 'Apply',
+        'GM' => 'GM',
+        'Officier' => 'Officier',
+        'Raider' => 'Raider',
+        'RL' => 'RL',
+    ];
 }

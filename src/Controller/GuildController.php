@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Guild;
+use App\Entity\Character;
 use App\Form\GuildForm;
 use App\Repository\GuildRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -71,11 +72,34 @@ final class GuildController extends AbstractController
     #[Route('/{id}', name: 'app_guild_delete', methods: ['POST'])]
     public function delete(Request $request, Guild $guild, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$guild->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $guild->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($guild);
             $entityManager->flush();
         }
 
         return $this->redirectToRoute('app_guild_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/guild/membres', name: 'app_guild_members')]
+    public function members(Request $request, EntityManagerInterface $em): Response
+    {
+        $characterId = $request->getSession()->get('selected_character_id');
+        $character = $characterId ? $em->getRepository(Character::class)->find($characterId) : null;
+
+        if (!$character || !$character->getGuild()) {
+            $this->addFlash('error', 'Ce personnage n\'a pas de guilde.');
+            return $this->redirectToRoute('app_dashboard');
+        }
+
+        $guild = $character->getGuild();
+        $members = $em->getRepository(Character::class)->findBy(['guild' => $guild]);
+
+        return $this->render('guild/members.html.twig', [
+            'guild' => $guild,
+            'members' => $members,
+            'character' => $character,
+        ]);
+    }
+
+    
 }
