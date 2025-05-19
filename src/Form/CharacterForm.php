@@ -11,6 +11,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
 
 class CharacterForm extends AbstractType
 {
@@ -20,7 +22,9 @@ class CharacterForm extends AbstractType
             ->add('nameCharacter')
             ->add('raiderIo')
             ->add('server')
-            ->add('role')
+            ->add('role', ChoiceType::class, [
+                'choices' => array_flip(Character::ROLES),
+            ])
 
             ->add('classe', EntityType::class, [
                 'class' => Classe::class,
