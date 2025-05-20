@@ -32,6 +32,36 @@
             {% else %}
                 {{ member.role }}
             {% endif %}
+
+            {% if character.role in allowed_roles %}
+                <button type="button" onclick="toggleLootForm({{ member.id }})">🎁 Ajouter un loot</button>
+                <div id="loot-form-{{ member.id }}" style="display: none; margin-top: 5px;">
+                    <form method="post" action="{{ path('app_loot_add') }}">
+                        <input type="hidden" name="character_id" value="{{ member.id }}">
+                        <input type="text" name="nom" placeholder="Nom de l'objet" required>
+                        <select name="type" required>
+                            <option value="NM">NM</option>
+                            <option value="HM">HM</option>
+                            <option value="MM">MM</option>
+                        </select>
+                        <button type="submit">💾</button>
+                    </form>
+                </div>
+            {% endif %}
+
+            <button type="button" onclick="toggleLootHistory({{ member.id }})">📦 Voir les loots</button>
+            <div id="loot-history-{{ member.id }}" style="display: none; margin-top: 5px;">
+                {% if member.loots|length > 0 %}
+                    <p>📦 Loots : {{ member.loots|length }}</p>
+                    <ul>
+                        {% for loot in member.loots %}
+                            <li>{{ loot.nom }} ({{ loot.type }})</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p><em>Aucun loot enregistré.</em></p>
+                {% endif %}
+            </div>
         </li>
     {% else %}
         <li>Aucun membre dans cette guilde.</li>
@@ -59,5 +89,15 @@
             });
         });
     });
+
+    function toggleLootForm(memberId) {
+        const el = document.getElementById('loot-form-' + memberId);
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function toggleLootHistory(memberId) {
+        const el = document.getElementById('loot-history-' + memberId);
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
 </script>
 {% endblock %}
