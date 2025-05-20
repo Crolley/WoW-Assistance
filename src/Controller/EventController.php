@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Event;
+use App\Entity\Character;
 use App\Form\EventForm;
 use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,15 +26,25 @@ final class EventController extends AbstractController
     #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $characterId = $request->getSession()->get('selected_character_id');
+        $character = $entityManager->getRepository(Character::class)->find($characterId);
+
+        if (!$character || !$character->getGuild()) {
+            $this->addFlash('error', 'Impossible de créer un événement sans guilde.');
+            return $this->redirectToRoute('app_dashboard');
+        }
+
         $event = new Event();
         $form = $this->createForm(EventForm::class, $event);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $event->setGuild($character->getGuild());
+
             $entityManager->persist($event);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_guild_events');
         }
 
         return $this->render('event/new.html.twig', [
@@ -59,7 +70,7 @@ final class EventController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_guild_events');
         }
 
         return $this->render('event/edit.html.twig', [
@@ -71,11 +82,35 @@ final class EventController extends AbstractController
     #[Route('/{id}', name: 'app_event_delete', methods: ['POST'])]
     public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->getPayload()->getString('_token'))) {
+        $submittedToken = $request->request->get('_token');
+    
+        if ($this->isCsrfTokenValid('delete' . $event->getId(), $submittedToken)) {
             $entityManager->remove($event);
             $entityManager->flush();
+    
+            $this->addFlash('success', 'Événement supprimé.');
+        }
+    
+        return $this->redirectToRoute('app_guild_events');
+    }
+    
+
+    #[Route('/guild/events', name: 'app_guild_events')]
+    public function guildEvents(Request $request, EntityManagerInterface $em): Response
+    {
+        $characterId = $request->getSession()->get('selected_character_id');
+        $character = $em->getRepository(Character::class)->find($characterId);
+
+        if (!$character || !$character->getGuild()) {
+            $this->addFlash('error', 'Pas de guilde trouvée.');
+            return $this->redirectToRoute('app_dashboard');
         }
 
-        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+        $events = $em->getRepository(Event::class)->findBy(['guild' => $character->getGuild()]);
+
+        return $this->render('event/guild_event.html.twig', [
+            'events' => $events,
+            'character' => $character,
+        ]);
     }
 }
