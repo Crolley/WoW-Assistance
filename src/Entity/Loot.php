@@ -23,6 +23,22 @@ class Loot
     #[ORM\JoinColumn(nullable: false)]
     private ?Character $character = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): static
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -63,4 +79,5 @@ class Loot
 
         return $this;
     }
+    
 }
