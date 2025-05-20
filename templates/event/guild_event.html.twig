@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Événements de la guilde{% endblock %}
+
+{% block body %}
+<h1>📅 Événements de la guilde {{ character.guild.name }}</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Actions</th>
+            <th>Participation</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for event in events %}
+            <tr>
+                <td>{{ event.title }}</td>
+                <td>{{ event.description }}</td>
+                <td>{{ event.date|date('d/m/Y H:i') }}</td>
+                <td>{{ event.type }}</td>
+                <td>
+                    <a href="{{ path('app_event_show', {'id': event.id}) }}">👁️</a>
+                    {% if character.role in ['GM', 'RL', 'Officier'] %}
+                        <a href="{{ path('app_event_edit', {'id': event.id}) }}">✏️</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% set participation = event.getParticipationFor(character) %}
+                    {% if participation %}
+                        <span>{{ participation.status }}</span>
+                    {% else %}
+                        <form method="post" action="{{ path('api_event_participation', { id: event.id }) }}">
+                            <button name="status" value="accepted">✅</button>
+                            <button name="status" value="declined">❌</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Aucun événement pour cette guilde.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if character.role in ['GM', 'RL', 'Officier'] %}
+    <a href="{{ path('app_event_new') }}">➕ Créer un événement</a>
+{% endif %}
+
+<p><a href="{{ path('app_dashboard') }}">← Retour au dashboard</a></p>
+{% endblock %}

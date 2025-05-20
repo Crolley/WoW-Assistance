@@ -16,7 +16,6 @@ final class DashboardController extends AbstractController
     {
         $characterId = $request->getSession()->get('selected_character_id');
 
-        // 🔁 Si aucun personnage sélectionné → redirige vers la sélection
         if (!$characterId) {
             return $this->redirectToRoute('app_select_character');
         }

@@ -18,10 +18,7 @@ class EventForm extends AbstractType
             ->add('description')
             ->add('date')
             ->add('type')
-            ->add('guild', EntityType::class, [
-                'class' => Guild::class,
-                'choice_label' => 'id',
-            ])
+
         ;
     }
 
