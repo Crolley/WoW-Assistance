@@ -10,17 +10,18 @@
 	{% if character.guild %}
 		<h2>Guilde :
 			{{ character.guild.name }}</h2>
-	{% else %}
+		{% else %}
 		<h2>Pas de guilde</h2>
-		<a href="#">🔍 Rejoindre une guilde</a>
-	{% endif %}
+			<a href="{{ path('app_guild_available') }}">🔍 Rejoindre une guilde</a>
+		{% endif %}
+
 
 
 	<div style="padding: 1rem; background: #eee; border-radius: 8px;">
 		<h2>Tableau de bord</h2>
 		<ul>
 			<li>
-				<a href="{{path('app_guild_index')}}">Gérer ma guilde</a>
+				<a href="{{ path('app_guild_manage') }}">Gérer ma guilde</a>
 			</li>
 			<li>
 				<a href="{{path('app_guild_members')}}">Membres de la guilde</a>
@@ -30,16 +31,21 @@
 				<a href="{{ path('app_guild_events') }}">Voir les événements</a>
 			</li>
 			<li>
-				<a href="#">Voir les loots</a>
-			</li>
-			<li>
-				<a href="#">Requêtes de raid</a>
+				<a href="{{ path('app_select_character') }}">Changer de personnage</a>
 			</li>
 			<li>
 				<form action="/logout" method="post">
 					<button type="submit">Se déconnecter</button>
 				</form>
 			</li>
+			{% if character.guild %}
+				<li>
+					<form method="post" action="{{ path('app_character_leave_guild', { id: character.id }) }}">
+				 		<button type="submit" style="color:red;">Quitter la guilde</button>
+					</form>
+				</li>
+			{% endif %}
+
 
 		</li>
 

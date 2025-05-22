@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Guildes disponibles{% endblock %}
+
+{% block body %}
+    <h1>Liste des guildes disponibles</h1>
+
+    {% if guilds is empty %}
+        <p>Aucune guilde disponible pour le moment.</p>
+    {% else %}
+        <ul>
+            {% for guild in guilds %}
+                <li>
+                    <strong>{{ guild.name }}</strong> — {{ guild.faction }} / {{ guild.server }}
+                    <form method="post" action="{{ path('app_guild_request', {id: guild.id}) }}" style="display:inline; margin-left: 10px;">
+                        <button type="submit">Postuler ✉️</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <p><a href="{{ path('app_dashboard') }}">Retour au dashboard</a></p>
+{% endblock %}

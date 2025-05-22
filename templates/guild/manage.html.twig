@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gérer ma guilde{% endblock %}
+
+{% block body %}
+<h1>Demandes de recrutement pour {{ guild.name }}</h1>
+
+{% if requests is empty %}
+    <p>Aucune demande en attente.</p>
+{% else %}
+    <ul>
+        {% for request in requests %}
+            <li>
+                {{ request.character.nameCharacter }} - RaiderIo : {{ request.character.raiderIo }}  souhaite rejoindre la guilde.
+                <form method="post" action="{{ path('app_join_request_accept', {id: request.id}) }}" style="display:inline">
+                    <button type="submit">✅ Accepter</button>
+                </form>
+                <form method="post" action="{{ path('app_join_request_refuse', {id: request.id}) }}" style="display:inline">
+                    <button type="submit">❌ Refuser</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<p><a href="{{ path('app_dashboard') }}">Retour au dashboard</a></p>
+{% endblock %}

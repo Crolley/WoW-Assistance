@@ -43,7 +43,7 @@ final class GuildController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_guild_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_guild_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(Guild $guild): Response
     {
         return $this->render('guild/show.html.twig', [
@@ -51,7 +51,7 @@ final class GuildController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_guild_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_guild_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     public function edit(Request $request, Guild $guild, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(GuildForm::class, $guild);
@@ -69,7 +69,7 @@ final class GuildController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_guild_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_guild_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function delete(Request $request, Guild $guild, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete' . $guild->getId(), $request->getPayload()->getString('_token'))) {
@@ -100,6 +100,4 @@ final class GuildController extends AbstractController
             'character' => $character,
         ]);
     }
-
-    
 }
