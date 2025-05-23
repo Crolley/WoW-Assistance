@@ -104,6 +104,12 @@ class Event
         return $this->eventParticipations;
     }
 
+    public function getParticipations(): Collection
+    {
+    return $this->eventParticipations;
+    }
+
+
     public function addEventParticipation(EventParticipation $participation): static
     {
         if (!$this->eventParticipations->contains($participation)) {

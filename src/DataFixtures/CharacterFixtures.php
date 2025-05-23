@@ -25,7 +25,8 @@ class CharacterFixtures extends Fixture implements DependentFixtureInterface
             throw new \RuntimeException("Users, guilds, or classes are missing. Check your fixture order.");
         }
 
-        $names = ['Crolley', 'Eryliss', 'Mérös', 'Marfight', 'Silma', 'Faolyn', 'Arnox', 'Trapstarz', 'Azortharion', 'Crolaid'];
+        $names = ['Crolley', 'Eryliss', 'Mérös', 'Marfight', 'Silma', 'Faolyn', 'Arnox', 'Trapstarz', 'Azortharion', 'Crolaid', 'Arnox', 'Joof',
+        'Fao', 'Kreezhem', 'Bansherz', 'Dacade', 'Freyja',  ];
 
         foreach ($names as $name) {
             $character = new Character();

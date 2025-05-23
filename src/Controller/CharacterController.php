@@ -31,6 +31,10 @@ final class CharacterController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $character->setUser($this->getUser());
+            $character->setUser($this->getUser());
+            $character->setRole('apply'); 
+            $character->setGuild(null); 
+
             $entityManager->persist($character);
             $entityManager->flush();
 
@@ -81,4 +85,20 @@ final class CharacterController extends AbstractController
 
         return $this->redirectToRoute('app_character_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/character/{id}/leave-guild', name: 'app_character_leave_guild', methods: ['POST'])]
+    public function leaveGuild(Character $character, Request $request, EntityManagerInterface $em): Response
+    {
+        if ($this->getUser() !== $character->getUser()) {
+            throw $this->createAccessDeniedException("Tu ne peux pas modifier un personnage qui ne t'appartient pas.");
+        }
+
+        $character->setGuild(null);
+        $em->flush();
+
+        $this->addFlash('success', 'Tu as quitté la guilde.');
+
+        return $this->redirectToRoute('app_dashboard');
+    }
+
 }

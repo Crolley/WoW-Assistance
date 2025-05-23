@@ -3,55 +3,82 @@
 {% block title %}Événements de la guilde{% endblock %}
 
 {% block body %}
-<h1>📅 Événements de la guilde {{ character.guild.name }}</h1>
+<h1>Événements de la guilde {{ character.guild.name }}</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Titre</th>
-            <th>Description</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Actions</th>
-            <th>Participation</th>
-        </tr>
-    </thead>
-    <tbody>
+{% if events is empty %}
+    <p>Aucun événement à venir.</p>
+{% else %}
+    <ul style="padding-left: 0;">
         {% for event in events %}
-            <tr>
-                <td>{{ event.title }}</td>
-                <td>{{ event.description }}</td>
-                <td>{{ event.date|date('d/m/Y H:i') }}</td>
-                <td>{{ event.type }}</td>
-                <td>
-                    <a href="{{ path('app_event_show', {'id': event.id}) }}">👁️</a>
+            <li style="margin-bottom: 2rem; list-style: none;">
+                <div style="border: 1px solid rgba(79, 195, 247, 0.3); padding: 1rem; border-radius: 8px; background-color: rgba(255, 255, 255, 0.05);">
+                    <h2 style="margin-top: 0;">{{ event.title }}</h2>
+                    <p><strong>Date :</strong> {{ event.date|date('d/m/Y H:i') }}</p>
+                    <p>{{ event.description }}</p>
+
                     {% if character.role in ['GM', 'RL', 'Officier'] %}
-                        <a href="{{ path('app_event_edit', {'id': event.id}) }}">✏️</a>
+                        <a href="{{ path('app_event_edit', { id: event.id }) }}" class="btn btn-primary">✏️ Modifier</a>
                     {% endif %}
-                </td>
-                <td>
+
                     {% set participation = event.getParticipationFor(character) %}
                     {% if participation %}
-                        <span>{{ participation.status }}</span>
+                        <p><strong>Statut :</strong> {{ participation.status|capitalize }}</p>
                     {% else %}
-                        <form method="post" action="{{ path('api_event_participation', { id: event.id }) }}">
-                            <button name="status" value="accepted">✅</button>
-                            <button name="status" value="declined">❌</button>
+                        <form method="post" action="{{ path('api_event_participation', { id: event.id }) }}" style="margin-top: 10px;">
+                            <button name="status" value="accepted" class="btn btn-success">✅ Participer</button>
+                            <button name="status" value="declined" class="btn btn-danger">❌ Refuser</button>
                         </form>
                     {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">Aucun événement pour cette guilde.</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
-{% if character.role in ['GM', 'RL', 'Officier'] %}
-    <a href="{{ path('app_event_new') }}">➕ Créer un événement</a>
+                    <button type="button" class="btn btn-secondary" style="margin-top: 10px;" onclick="toggleResponses({{ event.id }})">👥 Voir les réponses</button>
+
+                    <div id="responses-{{ event.id }}" style="display: none; margin-top: 10px; padding-left: 15px;">
+                        <strong>✅ Acceptés :</strong>
+                        <ul>
+                            {% set hasAccepted = false %}
+                            {% for p in event.participations %}
+                                {% if p.status == 'accepted' %}
+                                    {% set hasAccepted = true %}
+                                    <li>{{ p.character.nameCharacter }}</li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if not hasAccepted %}
+                                <li><em>Aucun participant pour l’instant.</em></li>
+                            {% endif %}
+                        </ul>
+
+                        <strong>❌ Refusés :</strong>
+                        <ul>
+                            {% set hasDeclined = false %}
+                            {% for p in event.participations %}
+                                {% if p.status == 'declined' %}
+                                    {% set hasDeclined = true %}
+                                    <li>{{ p.character.nameCharacter }}</li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if not hasDeclined %}
+                                <li><em>Aucun refus enregistré.</em></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
 {% endif %}
 
-<p><a href="{{ path('app_dashboard') }}">← Retour au dashboard</a></p>
+{% if character.role in ['GM', 'RL', 'Officier'] %}
+    <a href="{{ path('app_event_new') }}" class="btn btn-primary">➕ Créer un événement</a>
+{% endif %}
+
+<p style="margin-top: 2rem;">
+    <a href="{{ path('app_dashboard') }}" class="btn btn-secondary">← Retour au dashboard</a>
+</p>
+
+<script>
+    function toggleResponses(eventId) {
+        const el = document.getElementById('responses-' + eventId);
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
 {% endblock %}

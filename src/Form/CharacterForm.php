@@ -21,17 +21,33 @@ class CharacterForm extends AbstractType
         $builder
             ->add('nameCharacter')
             ->add('raiderIo')
-            ->add('server')
-            ->add('role', ChoiceType::class, [
-                'choices' => array_flip(Character::ROLES),
+            ->add('server', ChoiceType::class, [
+                'label' => 'Serveur',
+                'choices' => [
+                    'Archimonde' => 'Archimonde',
+                    'Ysondre' => 'Ysondre',
+                    'Dalaran' => 'Dalaran',
+                    'Hyjal' => 'Hyjal',
+                    'Elune' => 'Elune',
+                    'Sargeras' => 'Sargeras',
+                    'Garona' => 'Garona',
+                    'Rashgarroth' => 'Rashgarroth',
+                    'Arak-arahm' => 'Arak-arahm',
+                    'Sinstralis' => 'Sinstralis',
+                    'Culte de la Rive noire' => 'Culte de la Rive noire',
+                    'Varimathras' => 'Varimathras',
+                    'Kirin Tor' => 'Kirin Tor',
+                    'Medivh' => 'Medivh',
+                    'Illidan' => 'Illidan',
+                    'Suramar' => 'Suramar',
+                    'Uldaman' => 'Uldaman',
+                    'Eitrigg' => 'Eitrigg',
+                ],
+                'placeholder' => 'Choisir un serveur',
             ])
 
             ->add('classe', EntityType::class, [
                 'class' => Classe::class,
-                'choice_label' => 'name',
-            ])
-            ->add('guild', EntityType::class, [
-                'class' => Guild::class,
                 'choice_label' => 'name',
             ])
             ->add('specialisation', EntityType::class, [
