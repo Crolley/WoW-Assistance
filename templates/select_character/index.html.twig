@@ -1,28 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Sélection du personnage
-{% endblock %}
+{% block title %}Sélection du personnage{% endblock %}
 
 {% block body %}
-	<h1>Choisis ton personnage</h1>
-	<form action="/logout" method="post">
-		<button type="submit">Se déconnecter</button>
-	</form>
-	<button>
-		<a href="{{ path('app_character_new') }}">Créer un personnage</a>
-	</button>
+    <div class="card">
+        <h1>Choisis ton personnage</h1>
 
+        <form action="/logout" method="post">
+            <button type="submit" class="btn btn-primary">Se déconnecter</button>
+        </form>
 
-	<ul>
-		{% for character in characters %}
-			<li>
-				<a href="{{ path('app_select_character_set', { id: character.id }) }}">
-					{{ character.nameCharacter }}
-				</a>
-			</li>
-		{% else %}
-			<li>Tu n'as aucun personnage !</li>
-		{% endfor %}
-	</ul>
+        <a href="{{ path('app_character_new') }}" class="btn btn-primary" style="display: inline-block;">
+            ➕ Créer un personnage
+        </a>
 
+        <ul style="margin-top: 1.5rem;">
+            {% for character in characters %}
+                <li>
+                    <a href="{{ path('app_select_character_set', { id: character.id }) }}" class="btn btn-secondary" style="margin-top: 0.5rem;">
+                        {{ character.nameCharacter }}
+                    </a>
+                </li>
+            {% else %}
+                <li>Tu n'as aucun personnage !</li>
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

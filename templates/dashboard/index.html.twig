@@ -1,53 +1,36 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block body %}
-	<h1>Bienvenue
-		{{ character.nameCharacter }}</h1>
+    <h1>Bienvenue {{ character.nameCharacter }}</h1>
 
-	{% if character.guild %}
-		<h2>Guilde :
-			{{ character.guild.name }}</h2>
-		{% else %}
-		<h2>Pas de guilde</h2>
-			<a href="{{ path('app_guild_available') }}">🔍 Rejoindre une guilde</a>
-		{% endif %}
+    {% if character.guild %}
+        <h2>Guilde : {{ character.guild.name }}</h2>
+    {% else %}
+        <h2>Pas de guilde</h2>
+        <a href="{{ path('app_guild_available') }}">🔍 Rejoindre une guilde</a>
+    {% endif %}
 
-
-
-	<div style="padding: 1rem; background: #eee; border-radius: 8px;">
-		<h2>Tableau de bord</h2>
-		<ul>
-			<li>
-				<a href="{{ path('app_guild_manage') }}">Gérer ma guilde</a>
-			</li>
-			<li>
-				<a href="{{path('app_guild_members')}}">Membres de la guilde</a>
-
-			</li>
-			<li>
-				<a href="{{ path('app_guild_events') }}">Voir les événements</a>
-			</li>
-			<li>
-				<a href="{{ path('app_select_character') }}">Changer de personnage</a>
-			</li>
-			<li>
-				<form action="/logout" method="post">
-					<button type="submit">Se déconnecter</button>
-				</form>
-			</li>
-			{% if character.guild %}
-				<li>
-					<form method="post" action="{{ path('app_character_leave_guild', { id: character.id }) }}">
-				 		<button type="submit" style="color:red;">Quitter la guilde</button>
-					</form>
-				</li>
-			{% endif %}
-
-
-		</li>
-
-	</ul>
-</div>{% endblock %}
+    <div class="card">
+        <h2>Tableau de bord</h2>
+        <ul>
+            <li><a href="{{ path('app_guild_manage') }}">Gérer ma guilde</a></li>
+            <li><a href="{{ path('app_guild_members') }}">Membres de la guilde</a></li>
+            <li><a href="{{ path('app_guild_events') }}">Voir les événements</a></li>
+            <li><a href="{{ path('app_select_character') }}">Changer de personnage</a></li>
+            <li>
+                <form action="/logout" method="post">
+                    <button type="submit" class="btn btn-primary">Se déconnecter</button>
+                </form>
+            </li>
+            {% if character.guild %}
+                <li>
+                    <form method="post" action="{{ path('app_character_leave_guild', { id: character.id }) }}">
+                        <button type="submit" class="btn btn-danger">Quitter la guilde</button>
+                    </form>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
